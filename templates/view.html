@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View the Quiz</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+  rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+  crossorigin="anonymous">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/user_dashboard">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/scores" style="color:whitesmoke">Scores</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="/summary_user" style="color:whitesmoke">
+              Summary
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:whitesmoke" href="/logout">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <select class="form-select me-2" aria-label="Default select example">
+            <option selected>Select</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+          </select>
+          <button class="btn btn-outline-success" type="submit" style="color:whitesmoke">Search</button>
+        </form>
+        <span style="text-align:center; margin-left:10px; font-style:italic; font-weight: 700;">Welcome User</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="quiz-container">
+    <h2>View the Quiz</h2>
+
+    <div class="quiz-field">
+      <label>ID:</label>
+      <span>{{ quiz.id }}</span>
+    </div>
+
+    <div class="quiz-field">
+      <label>Subject:</label>
+      <span>{{ sub_name }}</span>
+    </div>
+
+    <div class="quiz-field">
+      <label>Chapter:</label>
+      <span>{{ chapter_name }}</span>
+    </div>
+
+    <div class="quiz-field">
+      <label>Number of Questions:</label>
+      <span>{{ quiz.questions|length }}</span>
+    </div>
+
+    <div class="quiz-field">
+      <label>Scheduled Date:</label>
+      <span>{{ quiz.date_of_quiz }}</span>
+    </div>
+
+    <div class="quiz-field">
+      <label>Duration (hh:mm):</label>
+      <span>{{ quiz.time_duration }}</span>
+    </div>
+
+    <a href="/user_dashboard" class="close-btn" style="text-decoration:none; text-align:center">Close</a>
+  </div>
+
+</body>
+</html>
