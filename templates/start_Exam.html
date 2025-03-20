@@ -29,7 +29,6 @@
   <div class="container mt-4">
     <h1 style="text-align:center;">{{ sub_name }}</h1>
     <h4 style="text-align:center;">{{ chapter_name }}</h4>
-    <div id="timer" class="text-center mb-3">Time Remaining: <span id="time">00:00</span></div>
     
     <form action="/submit/{{ quiz_id }}" method="POST" id="new-question-form">
       {% for question in questions %}
@@ -64,63 +63,6 @@
         <button type="submit" class="btn btn-primary" style="padding:10px; margin:10px;">Submit</button>
       </div>
     </form>
-  </div>
-
-  <script>
-    
-    let timerInterval;
-  
-    function startTimer(duration, display) {
-      
-      let timer = duration;
-      timerInterval = setInterval(function () {
-        
-        let totalSeconds = Math.ceil(timer);
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = totalSeconds % 60;
-  
-        
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        display.textContent = minutes + ":" + seconds;
-
-        timer -= 1;
-  
-        if (timer < 0) {
-          clearInterval(timerInterval);
-          document.getElementById("timer").innerText = "Time's up!";
-          setTimeout(function(){
-            submitExam();
-          }, 100);
-        }
-      }, 1000);
-    }
-  
-    function submitExam() {
-      console.log("Auto-submit triggered.");
-      const completionTime = new Date();
-      document.getElementById("completion_time").value = completionTime.toISOString();
-      const form = document.getElementById("new-question-form");
-      if (form) {
-        form.submit();
-      } else {
-        console.error("Form not found! Ensure the form ID is correct.");
-      }
-    }
-  
-    window.onload = function () {
-      const quizDuration = 1800; 
-      const display = document.querySelector('#time');
-      startTimer(quizDuration, display);
-  
-      document.getElementById("new-question-form").addEventListener("submit", function() {
-        const completionTime = new Date();
-        document.getElementById("completion_time").value = completionTime.toISOString();
-        console.log("Submit time set to:", completionTime.toISOString());
-      });
-    };
-  </script>
-  
-    
+  </div>   
 </body>
 </html>
