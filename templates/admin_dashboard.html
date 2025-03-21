@@ -56,6 +56,8 @@
           <table class="table caption-top">
               <thead>
                 <tr>
+                  <th scope="col">Chapter ID</th>
+                  <th scope="col">Chapter No.</th>
                   <th scope="col">Chapter Name</th>
                   <th scope="col">No. of Questions</th>
                   <th scope="col">Action</th>
@@ -64,10 +66,16 @@
               <tbody>
                 {% for chapt in subject.chapters %}
                 <tr>
+                  <th scope="row">{{ chapt.id }}</th>
+                  <th scope="row">{{ loop.index }}</th>
                   <th scope="row">{{ chapt.name }}</th>
                   <td>{{ chapt.chapt_questions|length }}</td>
-                  <td><a href="/edit_chapter/{{ chapt.id }}" class="btn btn-primary" style="padding-left:10px">Edit</a> 
-                    <a href="/delete_chapter/{{ chapt.id }}" class="btn btn-primary" style="padding-left:10px">Delete</a></td>
+                  <td>
+                    <div style="display:flex; align-items:center; margin:5px;" >
+                      <a href="/edit_chapter/{{ chapt.id }}" class="btn btn-primary" style="padding-left:10px">Edit</a> 
+                      <a href="/delete_chapter/{{ chapt.id }}" class="btn btn-primary" style="padding-left:10px; margin:5px;">Delete</a>
+                    </div>
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>

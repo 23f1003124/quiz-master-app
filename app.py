@@ -431,6 +431,7 @@ def search():
 
 @app.route('/summary_admin')
 def summary_admin():
+    #Subject-wise top scores
     user_id = session.get('user_id')
     subject_scores = []
     for sub in Subject.query.all():
@@ -448,7 +449,8 @@ def summary_admin():
              subject_score_dict['subject'] = sub.name
              subject_score_dict['score'] = int(sum(max_marks_list_across_chapters)/len(max_marks_list_across_chapters))
         subject_scores.append(subject_score_dict)
-        
+
+    #Subject-wise users attempt   
     subject_attempts = []
     for sub in Subject.query.all():
         attempts = 0 
@@ -458,7 +460,8 @@ def summary_admin():
             for quiz in chapt.quizzes:
                 score_obj_list = Scores.query.filter_by(quiz_id = quiz.id).all()
                 quizzes_attempts.append(len(score_obj_list))
-            attempts = max(quizzes_attempts)
+            if quizzes_attempts != []:
+                attempts = max(quizzes_attempts)
         subject_attempts_dict['subject'] = sub.name 
         subject_attempts_dict['attempts'] = attempts 
         subject_attempts.append(subject_attempts_dict) 
