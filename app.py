@@ -20,8 +20,12 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username').strip().lower()
         password = request.form.get('password')
-        if username == 'admin123@gmail.com' and password == '1020304050':
-            return redirect('/admin')
+        if username == 'admin123@gmail.com':
+            if password == '1020304050':
+                return redirect('/admin')
+            else:
+                return render_template('message1.html')
+        
         user = User.query.filter_by(username = username).first()
         if user:
             if user.password == password:
@@ -104,15 +108,15 @@ def quiz_management():
 @app.route('/add_quiz', methods = ['GET', 'POST'])
 def add_quiz():
     if request.method == 'POST':
-        chapter_id = request.form.get('chapter_id')
-        date = request.form.get('exam_date')
-        date_of_quiz = datetime.strptime(date, '%Y-%m-%d').date()
-        duration = request.form.get('duration')
-        time_duration = datetime.strptime(duration, '%H:%M').time()
         action = request.form.get('action')
         if action == 'cancel':
             return redirect('/quiz_management')
         if action == 'save':
+            chapter_id = request.form.get('chapter_id')
+            date = request.form.get('exam_date')
+            date_of_quiz = datetime.strptime(date, '%Y-%m-%d').date()
+            duration = request.form.get('duration')
+            time_duration = datetime.strptime(duration, '%H:%M').time()
             quiz_attempted = 0
             new_quiz = Quiz(chapter_id = chapter_id, date_of_quiz = date_of_quiz, time_duration = time_duration, quiz_attempted = quiz_attempted)
             db.session.add(new_quiz)
@@ -163,6 +167,8 @@ def user_dashboard():
 
 @app.route('/view/<int:quiz_id>')
 def view(quiz_id):
+    user_id = session.get('user_id')
+    user_obj = User.query.get(user_id)
     quiz = Quiz.query.filter_by(id = quiz_id).first()
     chapter_id = quiz.chapter_id 
     chapter_obj = Chapter.query.filter_by(id = chapter_id).first()
@@ -170,7 +176,7 @@ def view(quiz_id):
     sub_id = chapter_obj.sub_id
     sub_obj = Subject.query.filter_by(id = sub_id).first()
     sub_name = sub_obj.name
-    return render_template('view.html', quiz = quiz, chapter_name = chapter_name, sub_name = sub_name)
+    return render_template('view.html', quiz = quiz, chapter_name = chapter_name, sub_name = sub_name, user_obj = user_obj)
 
 
 @app.route('/start_Exam/<int:quiz_id>')
@@ -248,11 +254,12 @@ def submit(quiz_id):
         return redirect('/user_dashboard')
 
 
-@app.route('/edit_chapter/<int:chapter_id>', methods = ['POST', 'GET'])
+@app.route('/edit_chapter/<int:chapter_id>', methods = ['GET', 'POST'])
 def edit_chapter(chapter_id):
     chapt_obj = Chapter.query.get(chapter_id)
     if request.method == 'POST':
         action = request.form.get('action')
+        print(action)
         if action == 'cancel':
             return redirect('/admin')
         elif action == 'save':
@@ -263,20 +270,79 @@ def edit_chapter(chapter_id):
     return render_template('edit_chapt.html', chapt_obj = chapt_obj)
 
 
-@app.route('/delete_chapter/<int:chapter_id>', methods = ['POST', 'GET'])
+@app.route('/delete_chapter/<int:chapter_id>')
 def delete_chapter(chapter_id):
     chapt_obj = Chapter.query.get(chapter_id)
     question_objs = chapt_obj.chapt_questions 
-    for question in question_objs:
-        db.session.delete(question)
-    quiz_objs = chapt_obj.quizzes 
+    quiz_objs = chapt_obj.quizzes
     for quiz in quiz_objs:
+        question_objs = quiz.questions
+        for question in question_objs:
+            db.session.delete(question)
         db.session.delete(quiz)
     db.session.delete(chapt_obj)
     db.session.commit()
     return redirect('/admin')
 
+@app.route('/edit_quiz/<int:quiz_id>', methods = ['GET', 'POST'])
+def edit_quiz(quiz_id):
+    quiz_obj = Quiz.query.get(quiz_id)
+    if request.method == "POST":
+        action = request.form.get('action')
+        if action == 'save':
+            quiz_obj.chapter_id = request.form.get('chapter_id')
+            date = request.form.get('exam_date')
+            date_of_quiz = datetime.strptime(date, '%Y-%m-%d').date()
+            quiz_obj.date_of_quiz = date_of_quiz
+            duration = request.form.get('duration')
+            time_duration = datetime.strptime(duration[:5], '%H:%M').time()
+            quiz_obj.time_duration = time_duration
+            db.session.commit()
+            return redirect('/quiz_management')
+        if action == 'cancel':
+            return redirect('/quiz_management')
+    return render_template('edit_quiz.html', quiz_obj = quiz_obj)
 
+
+@app.route('/delete_quiz/<int:quiz_id>')
+def delete_quiz(quiz_id):
+    quiz_obj = Quiz.query.get(quiz_id)
+    question_objs = quiz_obj.questions
+    for question in question_objs:
+        db.session.delete(question)
+    db.session.delete(quiz_obj)
+    db.session.commit()
+    return redirect('/quiz_management')
+
+@app.route('/edit_subject/<int:subject_id>', methods = ['GET', 'POST'])
+def edit_subject(subject_id):
+    subject_obj = Subject.query.get(subject_id)
+    if request.method == "POST":
+        action = request.form.get('action')
+        if action == 'cancel':
+            return redirect('/admin')
+        elif action == 'save':
+            subject_obj.name = request.form.get('sub_name')
+            subject_obj.description = request.form.get('descrip')
+            db.session.commit()
+            return redirect('/admin')
+    return render_template('edit_subject.html', subject_obj = subject_obj)
+
+@app.route('/delete_subject/<int:subject_id>')
+def delete_subject(subject_id):
+    subject_obj = Subject.query.get(subject_id)
+    chapter_objs = subject_obj.chapters
+    for chapter in chapter_objs:
+        quiz_objs = chapter.quizzes
+        for quiz in quiz_objs:
+            question_objs = quiz.questions 
+            for question in question_objs:
+                db.session.delete(question)
+            db.session.delete(quiz)
+        db.session.delete(chapter)
+    db.session.delete(subject_obj)
+    db.session.commit()
+    return redirect('/admin')
 @app.route('/scores')
 def scores():
     quizzes = Quiz.query.all()
@@ -378,8 +444,9 @@ def summary_admin():
                     allquizzes_marks.append(score.total_scored)
             if allquizzes_marks != []:
                 max_marks_list_across_chapters.append(max(allquizzes_marks))
-        subject_score_dict['subject'] = sub.name
-        subject_score_dict['score'] = int(sum(max_marks_list_across_chapters)/len(max_marks_list_across_chapters))
+        if max_marks_list_across_chapters != []:
+             subject_score_dict['subject'] = sub.name
+             subject_score_dict['score'] = int(sum(max_marks_list_across_chapters)/len(max_marks_list_across_chapters))
         subject_scores.append(subject_score_dict)
         
     subject_attempts = []
@@ -400,4 +467,6 @@ def summary_admin():
         subject_scores=subject_scores,
         subject_attempts=subject_attempts
     )
+
+
 app.run(debug=True)

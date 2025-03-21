@@ -46,7 +46,10 @@
       {% for subject in sub_obj_list %}
       <div class="upcoming_quizes" style="width:700px">
         <div id="up_quizzes" style="text-align:center; margin-top:8px; font-style:oblique">
-          <h2 style="margin:25px; text-decoration:underline;" >{{ subject.name }}</h2>
+          <h2 style="margin:25px;" >{{ subject.name }} 
+            <a href="/edit_subject/{{ subject.id }}" class="btn btn-primary" style="padding-left:10px; margin-left:10px;">Edit</a>
+            <a href="/delete_subject/{{ subject.id }}" class="btn btn-primary" style="padding-left:10px; margin-left:10px;">Delete</a>
+          </h2>
         </div>
       
         <div class="container-fluid" style="margin-top:5px;">

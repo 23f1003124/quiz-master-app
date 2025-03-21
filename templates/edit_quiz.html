@@ -11,13 +11,13 @@
             <div id="form-page" style="height:400px">
                 <h2 style="text-align:center">New Quiz</h2>
                 <div class="container-fluid">
-                    <form action="/add_quiz" method="post">
+                    <form action="/edit_quiz/{{ quiz_obj.id }}" method="post">
                         <div class="row g-3 align-items-center" style="margin:5px; padding:5px;">
                             <div class="col-auto">
                               <label for="Input1" class="col-form-label">Chapter id :</label>
                             </div>
                             <div class="col-auto">
-                              <input type="text" id="Input1" class="form-control" name="chapter_id" required>
+                              <input type="text" id="Input1" class="form-control" name="chapter_id" value="{{ quiz_obj.chapter_id }}" required>
                             </div>
                         </div>
                         <br>
@@ -26,7 +26,7 @@
                               <label for="Input2" class="col-form-label">Date :</label>
                             </div>
                             <div class="col-auto">
-                                <input type="date" id="Input2" name="exam_date" required>
+                                <input type="date" id="Input2" name="exam_date" value="{{ quiz_obj.date_of_quiz }}" required>
                             </div>
                         </div>
                         <br>
@@ -35,7 +35,7 @@
                               <label for="inputPassword6" class="col-form-label">Duration :</label>
                             </div>
                             <div class="col-auto">
-                                <input type="time" id="duration" name="duration" step="60" required>
+                                <input type="time" id="duration" name="duration" step="60" value="{{ quiz_obj.time_duration }}" required>
                             </div>
                         </div> 
                         <br>

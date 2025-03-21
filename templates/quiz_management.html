@@ -42,9 +42,20 @@
     {% if quizzes|length > 0 %}
     {% for quiz in quizzes %}
     <div class="upcoming_quizes" style="border:none;">
-      <div id="up_quizzes" style="text-align:center; margin-top:8px; font-style:oblique; display:in">
-        <h1><span style="text-decoration: dashed; color:rgb(49, 160, 220)">Quiz{{ loop.index }}({{ quiz_to_chapter[quiz.id] }})({{ quiz.chapter_id }})</span></h1>
-      </div
+      <!--<div id="up_quizzes" style="text-align:center; margin-top:8px; font-style:oblique; display:flex; align-items:center;">
+        <h1><span style="text-decoration: dashed; color:rgb(49, 160, 220)">Quiz{{ loop.index }}({{ quiz_to_chapter[quiz.id] }})({{ quiz.chapter_id }})</span>
+          <span style="display:inline;">
+            <a href="/edit_quiz/{{ quiz.id }}" class="btn btn-primary" style="padding-left:10px; margin-left:1px;">Edit</a>
+            <a href="/delete_quiz/{{ quiz.id }}" class="btn btn-primary" style="padding-left:10px; margin-left:5pxpx;">Delete</a>
+          </span>
+        </h1>
+      </div-->
+      <div style="display: flex; align-items: center;">
+        <h1 style="margin: 0; color:rgb(49, 160, 220)">Quiz{{ loop.index }}({{ quiz_to_chapter[quiz.id] }})chapt_id({{ quiz.chapter_id }})</h1>
+        <a href="/edit_quiz/{{ quiz.id }}" class="btn btn-primary" style="margin-left:10px;">Edit</a>
+        <a href="/delete_quiz/{{ quiz.id }}" class="btn btn-primary" style="margin-left:10px;">Delete</a>
+      </div>
+      
       <div class="container-fluid" style="margin-top:70px;">
         <table class="table caption-top">
             <thead>
