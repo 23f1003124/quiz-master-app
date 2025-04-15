@@ -13,6 +13,8 @@ app.app_context().push()
 
 app.config['SECRET_KEY'] = 'ck0703907'
 
+db.create_all()
+
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
